@@ -9,11 +9,18 @@ async def connect():
     _streams_context = sse_client(url=server_url)
     streams = await _streams_context.__aenter__()
 
-    _session_context = ClientSession(*streams)
-    session: ClientSession = await _session_context.__aenter__()
+    print("Streams context:", _streams_context)
+    print("Streams:", streams)
+
+    # write_stream = streams[1]
+    # await write_stream.send({"hello": "1"})
+
+    # _session_context = ClientSession(*streams)
+    session: ClientSession = await ClientSession(*streams).__aenter__()
 
     # Initialize
-    await session.initialize()
+    res = await session.initialize()
+    print("Session initialized:", res)
 
     print(session)
     # List available tools to verify connection
