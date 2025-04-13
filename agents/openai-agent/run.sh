@@ -1,0 +1,1 @@
+PYTHONPATH=$(pwd) python openai-agent/agent.py
