@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-async def main():
+async def main(user_input):
     session_service = InMemorySessionService()
     memory_service = InMemoryMemoryService()
 
@@ -32,7 +32,6 @@ async def main():
         app_name=app_name, user_id=user_id, session_id=session_id
     )
 
-    user_input = "Who won the last FIFA World Cup?"
     message = types.Content(role="user", parts=[types.Part.from_text(text=user_input)])
 
     print(f"User: {user_input}")
@@ -58,4 +57,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main("Gia Lai sát nhập với tỉnh nào"))
