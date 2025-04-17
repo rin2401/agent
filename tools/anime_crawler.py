@@ -8,6 +8,7 @@ def search_anilist(query):
     query ($search: String) {
       Page(perPage: 5) {
         media(search: $search, type: ANIME) {
+          id
           title {
             romaji
             english
@@ -34,6 +35,7 @@ def search_anilist(query):
 
 def extract_info(anime):
     return {
+        'id': anime.get('id'),
         'title_romaji': anime['title'].get('romaji'),
         'title_english': anime['title'].get('english'),
         'title_native': anime['title'].get('native'),
