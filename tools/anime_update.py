@@ -15,28 +15,35 @@ client = gspread.authorize(creds)
 SHEET_KEY = "12q04f4hwtVQjfVSUayDsgXLGGbqrl9urm8gp556nPQA"
 WORKSHEET_ID = 33541967
 
-sheet = client.open_by_key(SHEET_KEY).get_worksheet_by_id(WORKSHEET_ID)
+db = client.open_by_key(SHEET_KEY)
+sheet = db.get_worksheet_by_id(WORKSHEET_ID)
 
-def update_anime_sheet():
+def update_anime_sheet(ids=[]):
     """
     Update the sheet with id and current_episodes for each anime id in ids.
     If id exists, update the row. Otherwise, append a new row.
     """
     # Get all existing records and build id->row mapping
     records = sheet.get_all_records()
-    id_to_row = {str(row['id']): idx+2 for idx, row in enumerate(records) if 'id' in row}  # +2 because Google Sheets is 1-indexed and header is row 1
-    for anime_id in id_to_row:
+    print(records)
+    id_to_row = {row['id']: idx+2 for idx, row in enumerate(records) if 'id' in row}  # +2 because Google Sheets is 1-indexed and header is row 1
+    ids = set(ids + list(id_to_row.keys()))
+    print(ids)
+    for anime_id in ids:
         info = crawl_anilist(int(anime_id))
         current_episodes = info['current_episodes'] if info else None
         row_data = [anime_id, current_episodes]
-        anime_id_str = str(anime_id)
-        if anime_id_str in id_to_row:
+        if anime_id in id_to_row:
             # Update existing row
-            row_num = id_to_row[anime_id_str]
-            sheet.update(f"A{row_num}:B{row_num}", [row_data])
+            row_num = id_to_row[anime_id]
+            sheet.update(range_name=f"A{row_num}:B{row_num}", values=[row_data])
         else:
             # Append new row
             sheet.append_row(row_data)
 
 if __name__ == "__main__":
-    update_anime_sheet()
+    ID = 1193967919
+    s = db.get_worksheet_by_id(ID)
+    records = s.get_all_records()
+    ids = [r['anilist_id'] for r in records if r.get('anilist_id')]
+    update_anime_sheet(ids)
