@@ -59,6 +59,7 @@ def crawl_anilist(anime_id):
           airingAt
           episode
         }
+        status
       }
     }
     '''
@@ -98,6 +99,7 @@ def extract_info(anime):
         'start_date': anime.get('startDate'),
         'end_date': anime.get('endDate'),
         'url': anime.get('siteUrl'),
+        'status': anime.get('status'),
     }
 
 
